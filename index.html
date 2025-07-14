@@ -1,0 +1,107 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mukesh Bharati - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white p-4 sticky top-0">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">Your Name</h1>
+            <ul class="flex space-x-6">
+                <li><a href="#about" class="hover:underline">About</a></li>
+                <li><a href="#projects" class="hover:underline">Projects</a></li>
+                <li><a href="#contact" class="hover:underline">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="about" class="py-20 bg-white text-center">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold mb-4">About Me</h2>
+            <p class="text-lg max-w-2xl mx-auto">
+                Hi, I'm Mukesh Bharati, a Technical Architect from India.
+                I specialize in Enterprise Architecting. Welcome to my portfolio!
+            </p>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-gray-100">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-8">My Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+                <!-- Project 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-semibold mb-2">Project 1</h3>
+                    <p class="mb-4">Description of your first project. [e.g., Built a responsive e-commerce website using React.]</p>
+                    <a href="[project-link]" class="text-blue-600 hover:underline">View Project</a>
+                </div>
+                <!-- Project 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-semibold mb-2">Project 2</h3>
+                    <p class="mb-4">Description of your second project. [e.g., Created a data visualization dashboard with Python.]</p>
+                    <a href="[project-link]" class="text-blue-600 hover:underline">View Project</a>
+                </div>
+                <!-- Add more projects as needed -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-blue-600 text-white text-center">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold mb-4">Get in Touch</h2>
+            <p class="text-lg mb-6">Interested in working together? Reach out to me!</p>
+            <p>Email: <a href="mailto:mukesh.bharati@outlook.com" class="underline">[your-email]</a></p>
+            <p>LinkedIn: <a href="[your-linkedin-url]" class="underline">[your-linkedin-username]</a></p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

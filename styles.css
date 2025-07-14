@@ -1,0 +1,25 @@
+/* Custom styles for additional control */
+body {
+    scroll-behavior: smooth;
+}
+
+nav a {
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    color: #f0f0f0;
+}
+
+section {
+    min-height: 100vh;
+    padding-top: 4rem;
+}
+
+.project-card {
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
